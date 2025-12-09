@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { XIcon, LogoIcon, CheckBadgeIcon, SparklesIcon, ShieldCheckIcon } from './icons';
 
@@ -31,18 +32,21 @@ const AboutModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         {/* Content */}
         <div className="p-6 overflow-y-auto no-scrollbar space-y-6">
             <p className="text-[--fg-primary] font-medium leading-relaxed">
-                ASAP AI delivers professional-grade analysis for the modern scholar.
+                ASAP AI. Because academic validation shouldn't take forever. 
+                <span className="block mt-2 text-[--fg-secondary]">
+                    We provide the rigorous critique your professor would give you, but without the office hour wait times or the judgmental sighs.
+                </span>
             </p>
 
             <div className="space-y-4">
-                <Feature icon={<CheckBadgeIcon />} title="Precision Scoring" desc="Detailed, criteria-based evaluation." />
-                <Feature icon={<SparklesIcon />} title="Originality" desc="Conceptual uniqueness verification." />
-                <Feature icon={<ShieldCheckIcon />} title="Viva Prep" desc="Defense questions and strategy." />
+                <Feature icon={<CheckBadgeIcon />} title="Ruthless Scoring" desc="Because 'good enough' is rarely actually good enough." />
+                <Feature icon={<SparklesIcon />} title="Originality Check" desc="Ensuring your brilliance is actually yours." />
+                <Feature icon={<ShieldCheckIcon />} title="Viva Prep" desc="So you don't freeze when they ask 'Why?'" />
             </div>
 
-            <div className="bg-[--bg-secondary] p-4 rounded-xl">
-                <p className="text-xs text-[--fg-secondary] leading-relaxed text-center">
-                    Designed to be an uncompromising partner in your pursuit of excellence. Powered by Google Gemini 3 Pro.
+            <div className="bg-[--bg-secondary] p-4 rounded-xl text-center">
+                 <p className="text-xs font-semibold text-[--fg-primary] tracking-wide">
+                    design by nbl.
                 </p>
             </div>
         </div>

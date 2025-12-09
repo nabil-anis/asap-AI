@@ -150,7 +150,7 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({
                     </div>
                     <div className="flex flex-col">
                         <span className="font-semibold tracking-tight text-[--fg-primary] leading-none">ASAP AI</span>
-                        <span className="text-[10px] text-[--fg-tertiary] font-medium leading-none mt-1">by nbl.</span>
+                        <a href="#" onClick={(e) => e.preventDefault()} className="text-[10px] text-[--fg-tertiary] font-medium leading-none mt-1 hover:text-[--fg-secondary] transition-colors">by nbl.</a>
                     </div>
                 </div>
                 <div className="flex items-center gap-0.5">

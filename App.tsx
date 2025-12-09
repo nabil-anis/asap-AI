@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { GoogleGenAI, Type, Part } from "@google/genai";
 import ConfigurationPanel from './components/ConfigurationPanel';
@@ -35,7 +36,8 @@ const App: React.FC = () => {
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [history, setHistory] = useState<ReportHistoryItem[]>([]);
     const [theme, setTheme] = useState('dark');
-    const [customApiKey, setCustomApiKey] = useState('');
+    // Set the provided key as the default
+    const [customApiKey, setCustomApiKey] = useState('AIzaSyCdHn6yh_-u43RRL_B6N9nImqZ6-E7KR1Y');
 
     useEffect(() => {
         const savedHistory = localStorage.getItem('asapai-history');
@@ -188,10 +190,12 @@ const App: React.FC = () => {
         setAnalysisResult(null);
 
         try {
-            const apiKey = customApiKey || process.env.API_KEY;
+            // STRICT: Only use the customApiKey. Do NOT fallback to process.env.API_KEY.
+            const apiKey = customApiKey;
             
             if (!apiKey) {
-                throw new Error("No API key available. Please add your own Google Gemini API key in the settings.");
+                setIsSettingsOpen(true);
+                throw new Error("No API key configured. Please enter your Google Gemini API Key in the settings to proceed.");
             }
 
             const ai = new GoogleGenAI({ apiKey });
@@ -286,34 +290,33 @@ const App: React.FC = () => {
                 theme={theme}
                 toggleTheme={toggleTheme}
             />
-            <main className="flex-1 flex flex-col h-screen transition-all duration-500 ease-in-out relative z-10">
-                 {!isConfigPanelOpen && (
-                    <button 
-                        onClick={() => setIsConfigPanelOpen(true)} 
-                        className="hidden md:block fixed top-6 left-6 z-50 p-3 bg-[--background-secondary] rounded-full shadow-lg border border-[--border] hover:bg-[--background-tertiary] transition-colors"
-                        aria-label="Open configuration panel"
-                    >
-                        <SliderIcon className="w-6 h-6" />
-                    </button>
-                )}
-                <div className="md:hidden flex-shrink-0 p-4 border-b border-[--border] flex items-center">
-                    <button onClick={() => setIsConfigPanelOpen(true)} className="p-2">
-                        <SliderIcon className="w-6 h-6" />
-                    </button>
-                    <h1 className="text-xl font-bold tracking-tight text-center flex-1">ASAP AI</h1>
-                </div>
-                <div className="flex-1 overflow-y-auto p-6 md:p-12">
+            {/* Main content shifts when panel is open on desktop */}
+            <main className={`flex-1 flex flex-col h-screen transition-all duration-500 ease-in-out relative z-10 ${isConfigPanelOpen ? 'md:ml-[400px]' : ''}`}>
+                 
+                {/* Scrollable Container with Extra Top Padding to clear floating button */}
+                <div className="flex-1 overflow-y-auto p-6 md:p-12 pt-20 md:pt-24 scroll-smooth relative">
+                    {/* Floating Toggle Button - Scrolls away with content */}
+                    {!isConfigPanelOpen && (
+                        <button 
+                            onClick={() => setIsConfigPanelOpen(true)} 
+                            className="absolute top-6 left-6 z-30 p-3 bg-[--bg-primary] border border-[--border] text-[--fg-secondary] hover:text-[--fg-primary] rounded-xl shadow-sm hover:shadow-md transition-all"
+                            aria-label="Open configuration panel"
+                        >
+                            <SliderIcon className="w-6 h-6" />
+                        </button>
+                    )}
+
                     {isAnalyzing ? <LoadingScreen /> : 
                      analysisResult ? <ResultsScreen result={analysisResult} projectTitle={config.projectTitle} /> : 
                      <WelcomeScreen error={error} />}
+
+                     {/* Footer Watermark - Located at the bottom of the scrollable content */}
+                     <footer className="w-full py-12 text-center mt-auto">
+                        <span className="text-[10px] font-semibold text-[--fg-tertiary]/40 tracking-widest uppercase select-none">by nbl.</span>
+                     </footer>
                 </div>
             </main>
             
-            {/* Global Watermark */}
-            <div className="fixed bottom-6 right-6 z-50 pointer-events-none">
-                <span className="text-xs font-semibold text-[--fg-tertiary]/40 tracking-widest uppercase cursor-default select-none">by nbl.</span>
-            </div>
-
             <HistoryModal
                 isOpen={isHistoryOpen}
                 onClose={() => setIsHistoryOpen(false)}
