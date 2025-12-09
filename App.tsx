@@ -6,9 +6,9 @@ import LoadingScreen from './components/LoadingScreen';
 import ResultsScreen from './components/ResultsScreen';
 import HistoryModal from './components/HistoryModal';
 import AboutModal from './components/AboutModal';
+import SettingsModal from './components/SettingsModal';
 import { SliderIcon } from './components/icons';
 import { AppConfig, AnalysisResult, UploadedFile, ReportHistoryItem, DisciplineKey } from './types';
-// FIX: Corrected typo from DISCIPLIPLINES to DISCIPLINES
 import { ACADEMIC_LEVELS, DISCIPLINES } from './constants';
 
 const DEFAULT_CONFIG: AppConfig = {
@@ -17,7 +17,6 @@ const DEFAULT_CONFIG: AppConfig = {
   academicLevel: ACADEMIC_LEVELS[2],
   evaluationContext: '',
   projectURL: '',
-  // FIX: Corrected typo from DISCIPLIPLINES to DISCIPLINES
   evaluationCriteria: DISCIPLINES['General'].criteria,
   checkOriginality: true,
   customDiscipline: '',
@@ -33,8 +32,10 @@ const App: React.FC = () => {
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(true);
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
     const [isAboutOpen, setIsAboutOpen] = useState(false);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [history, setHistory] = useState<ReportHistoryItem[]>([]);
     const [theme, setTheme] = useState('dark');
+    const [customApiKey, setCustomApiKey] = useState('');
 
     useEffect(() => {
         const savedHistory = localStorage.getItem('asapai-history');
@@ -43,6 +44,11 @@ const App: React.FC = () => {
         }
         const savedTheme = localStorage.getItem('asapai-theme') || 'dark';
         setTheme(savedTheme);
+        
+        const savedKey = localStorage.getItem('asapai-custom-api-key');
+        if (savedKey) {
+            setCustomApiKey(savedKey);
+        }
         
         if (window.innerWidth < 768) {
             setIsConfigPanelOpen(false);
@@ -68,6 +74,15 @@ const App: React.FC = () => {
         setAnalysisResult(null);
         setError(null);
     }, []);
+
+    const handleSaveApiKey = (key: string) => {
+        setCustomApiKey(key);
+        if (key) {
+            localStorage.setItem('asapai-custom-api-key', key);
+        } else {
+            localStorage.removeItem('asapai-custom-api-key');
+        }
+    };
     
     const saveReportToHistory = (result: AnalysisResult) => {
         const newHistoryItem: ReportHistoryItem = {
@@ -173,7 +188,13 @@ const App: React.FC = () => {
         setAnalysisResult(null);
 
         try {
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const apiKey = customApiKey || process.env.API_KEY;
+            
+            if (!apiKey) {
+                throw new Error("No API key available. Please add your own Google Gemini API key in the settings.");
+            }
+
+            const ai = new GoogleGenAI({ apiKey });
             
             const disciplineName = config.discipline === 'Other' ? config.customDiscipline : config.discipline;
             
@@ -221,7 +242,7 @@ const App: React.FC = () => {
             }));
 
             const response = await ai.models.generateContent({
-                model: 'gemini-2.5-pro',
+                model: 'gemini-3-pro-preview',
                 contents: { parts: [{ text: prompt }, ...fileParts] },
                 config: {
                     responseMimeType: "application/json",
@@ -232,7 +253,6 @@ const App: React.FC = () => {
             const resultJson = response.text.trim();
             const resultData = JSON.parse(resultJson) as AnalysisResult;
             
-            // Manually inject the user-provided title to ensure consistency.
             resultData.projectTitle = config.projectTitle;
 
             setAnalysisResult(resultData);
@@ -248,7 +268,7 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="flex h-screen w-screen bg-[--background] text-[--foreground] font-sans overflow-hidden">
+        <div className="flex h-screen w-screen bg-[--background] text-[--foreground] font-sans overflow-hidden relative">
             <ConfigurationPanel
                 config={config}
                 setConfig={setConfig}
@@ -260,12 +280,13 @@ const App: React.FC = () => {
                 savedReportsCount={history.length}
                 toggleHistory={() => setIsHistoryOpen(true)}
                 toggleAbout={() => setIsAboutOpen(true)}
+                toggleSettings={() => setIsSettingsOpen(true)}
                 isOpen={isConfigPanelOpen}
                 setIsOpen={setIsConfigPanelOpen}
                 theme={theme}
                 toggleTheme={toggleTheme}
             />
-            <main className="flex-1 flex flex-col h-screen transition-all duration-500 ease-in-out">
+            <main className="flex-1 flex flex-col h-screen transition-all duration-500 ease-in-out relative z-10">
                  {!isConfigPanelOpen && (
                     <button 
                         onClick={() => setIsConfigPanelOpen(true)} 
@@ -287,6 +308,12 @@ const App: React.FC = () => {
                      <WelcomeScreen error={error} />}
                 </div>
             </main>
+            
+            {/* Global Watermark */}
+            <div className="fixed bottom-6 right-6 z-50 pointer-events-none">
+                <span className="text-xs font-semibold text-[--fg-tertiary]/40 tracking-widest uppercase cursor-default select-none">by nbl.</span>
+            </div>
+
             <HistoryModal
                 isOpen={isHistoryOpen}
                 onClose={() => setIsHistoryOpen(false)}
@@ -298,6 +325,12 @@ const App: React.FC = () => {
             <AboutModal
                 isOpen={isAboutOpen}
                 onClose={() => setIsAboutOpen(false)}
+            />
+            <SettingsModal
+                isOpen={isSettingsOpen}
+                onClose={() => setIsSettingsOpen(false)}
+                customApiKey={customApiKey}
+                onSave={handleSaveApiKey}
             />
         </div>
     );

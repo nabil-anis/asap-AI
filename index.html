@@ -1,73 +1,71 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
   <head>
-      <link rel="icon" type="image/png" href="/favicon-asap.png" />
-
-     <!-- Open Graph Meta Tags -->
-  <meta property="og:title" content="ASAP AI - Your Instant AI Companion" />
-  <meta property="og:description" content="Experience instant AI solutions for your tasks. Generate, automate, and innovate—all in one place." />
-  <meta property="og:image" content="https://raw.githubusercontent.com/nabil-anis/ASAP/main/favicon-asap.jpg" />
-  <meta property="og:url" content="https://asap-by-nbl.vercel.app/" />
-  <meta property="og:type" content="website" />
-
-  <!-- Twitter Card Meta Tags -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="ASAP AI - Your Instant AI Companion" />
-  <meta name="twitter:description" content="Experience instant AI solutions for your tasks. Generate, automate, and innovate—all in one place." />
-  <meta name="twitter:image" content="https://raw.githubusercontent.com/nabil-anis/ASAP/main/favicon-asap.jpg" />
-
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon-asap.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>ASAP AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
       :root {
-        --background: #FFFFFF;
-        --background-secondary: #F7F7F7;
-        --background-tertiary: #E5E7EB;
-        --foreground: #121212;
-        --foreground-secondary: #6B7280;
-        --foreground-tertiary: #9CA3AF;
-        --border: #E5E7EB;
-        --input: #F0F0F0;
-        --ring: #3B82F6;
-        --accent: #3B82F6;
-        --accent-foreground: #FFFFFF;
-        --destructive: #EF4444;
-        --score-high: #16A34A; /* green-600 */
-        --score-medium: #F59E0B; /* amber-500 */
-        --score-low: #EF4444; /* red-500 */
+        /* Apple Light Theme */
+        --bg-primary: #FFFFFF;
+        --bg-secondary: #F5F5F7; /* System Gray 6 */
+        --bg-tertiary: #E5E5EA; /* System Gray 5 */
+        
+        --fg-primary: #1D1D1F;
+        --fg-secondary: #86868B;
+        --fg-tertiary: #A1A1A6;
+        
+        --border: rgba(0, 0, 0, 0.08);
+        --border-strong: rgba(0, 0, 0, 0.12);
+        
+        --accent: #0071E3; /* Apple Classic Blue */
+        --accent-hover: #0077ED;
+        --accent-fg: #FFFFFF;
+        
+        --glass-material: rgba(255, 255, 255, 0.72);
+        --glass-border: rgba(255, 255, 255, 0.4);
+        
+        --success: #34C759;
+        --warning: #FF9500;
+        --danger: #FF3B30;
       }
+
       html.dark {
-        --background: #121212;
-        --background-secondary: #1A1A1A;
-        --background-tertiary: #2A2A2A;
-        --foreground: #EAEAEA;
-        --foreground-secondary: #A0A0A0;
-        --foreground-tertiary: #6B7280;
-        --border: #2A2A2A;
-        --input: #242424;
-        --ring: #3B82F6;
-        --accent: #3B82F6;
-        --accent-foreground: #FFFFFF;
-        --destructive: #F87171; /* red-400 */
-        --score-high: #4ADE80; /* green-400 */
-        --score-medium: #FBBF24; /* amber-400 */
-        --score-low: #F87171; /* red-400 */
+        /* Apple Dark Theme */
+        --bg-primary: #000000;
+        --bg-secondary: #1C1C1E; /* System Gray 6 Dark */
+        --bg-tertiary: #2C2C2E; /* System Gray 5 Dark */
+        
+        --fg-primary: #F5F5F7;
+        --fg-secondary: #98989D;
+        --fg-tertiary: #636366;
+        
+        --border: rgba(255, 255, 255, 0.12);
+        --border-strong: rgba(255, 255, 255, 0.16);
+        
+        --accent: #0A84FF; /* Apple Dark Mode Blue */
+        --accent-hover: #409CFF;
+        --accent-fg: #FFFFFF;
+        
+        --glass-material: rgba(28, 28, 30, 0.72);
+        --glass-border: rgba(255, 255, 255, 0.08);
       }
-      html {
-        scroll-behavior: smooth;
-      }
+
       body {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Helvetica Neue", sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--fg-primary);
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         overscroll-behavior-y: none;
       }
+      
+      /* Hide Scrollbar but keep functionality */
       .no-scrollbar::-webkit-scrollbar {
           display: none;
       }
@@ -75,10 +73,22 @@
           -ms-overflow-style: none;
           scrollbar-width: none;
       }
+      
+      .glass {
+        background: var(--glass-material);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+      }
+
       .perspective-1000 { perspective: 1000px; }
       .preserve-3d { transform-style: preserve-3d; }
       .rotate-y-180 { transform: rotateY(180deg); }
       .backface-hidden { backface-visibility: hidden; }
+      
+      input, select, textarea {
+        font-family: inherit;
+      }
     </style>
      <script>
       tailwind.config = {
@@ -86,35 +96,36 @@
         theme: {
           extend: {
             fontFamily: {
-              'sans': ['Inter', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"'],
+              'sans': ['-apple-system', 'BlinkMacSystemFont', 'Inter', 'sans-serif'],
             },
-            borderRadius: {
-              '3xl': '1.5rem',
-              '2xl': '1rem',
+            colors: {
+               border: 'var(--border)',
+               background: 'var(--bg-primary)',
+               foreground: 'var(--fg-primary)',
+            },
+            animation: {
+              'fade-in': 'fade-in 0.4s ease-out forwards',
+              'scale-up': 'scale-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'slide-up': 'slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'blink': 'blink 1.4s infinite both',
             },
             keyframes: {
               'fade-in': {
                 'from': { opacity: '0' },
                 'to': { opacity: '1' },
               },
-              'slide-up': {
-                'from': { transform: 'translateY(20px)', opacity: '0' },
-                'to': { transform: 'translateY(0)', opacity: '1' },
+              'scale-up': {
+                'from': { opacity: '0', transform: 'scale(0.96)' },
+                'to': { opacity: '1', transform: 'scale(1)' },
               },
-               'background-pan': {
-                '0%': { 'background-position': '0% 50%' },
-                '100%': { 'background-position': '100% 50%' },
+              'slide-up': {
+                'from': { transform: 'translateY(16px)', opacity: '0' },
+                'to': { transform: 'translateY(0)', opacity: '1' },
               },
               'blink': {
                 '0%, 100%': { opacity: '0.2' },
                 '20%': { opacity: '1' },
               }
-            },
-            animation: {
-              'fade-in': 'fade-in 0.8s ease-out forwards',
-              'slide-up': 'slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-              'background-pan': 'background-pan 10s linear infinite alternate',
-              'blink': 'blink 1.4s infinite both',
             }
           }
         }
@@ -131,7 +142,7 @@
 }
 </script>
 </head>
-  <body class="bg-[--background] text-[--foreground] transition-colors duration-300">
+  <body class="bg-[--bg-primary] text-[--fg-primary] transition-colors duration-300 selection:bg-[--accent] selection:text-white">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

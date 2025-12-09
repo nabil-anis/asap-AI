@@ -10,4 +10,14 @@ const CTASection: React.FC = () => {
                 <p className="mt-6 max-w-2xl mx-auto text-lg text-[--foreground-secondary] leading-relaxed">
                     Schedule your complimentary consultation today and let our experts design a personalized treatment plan just for you. Begin your journey to a more confident and vibrant self.
                 </p>
-                <div className
+                <div className="mt-10 flex items-center justify-center gap-x-6">
+                    <a href="#contact" className="rounded-full bg-[--accent] px-8 py-3.5 text-sm font-semibold text-[--accent-foreground] shadow-sm hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[--accent] transition-all">
+                        Book Appointment
+                    </a>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+export default CTASection;
