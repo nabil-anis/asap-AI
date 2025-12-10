@@ -1,16 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
-import { XIcon, KeyIcon, ExternalLinkIcon, CheckCircleIcon } from './icons';
+import { XIcon, KeyIcon, ExternalLinkIcon } from './icons';
 
 interface SettingsModalProps {
     isOpen: boolean;
     onClose: () => void;
     customApiKey: string;
-    hasEnvKey: boolean;
     onSave: (key: string) => void;
 }
 
-const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, customApiKey, hasEnvKey, onSave }) => {
+const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, customApiKey, onSave }) => {
     const [inputKey, setInputKey] = useState(customApiKey);
 
     useEffect(() => {
@@ -23,8 +22,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, customAp
     };
 
     if (!isOpen) return null;
-
-    const isUsingEnvKey = !inputKey && hasEnvKey;
 
     return (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in" onClick={onClose}>
@@ -39,28 +36,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, customAp
 
                 <div className="p-6 space-y-5">
                     
-                    {/* Status Indicator */}
-                    <div className="flex items-center justify-between bg-[--bg-secondary] p-3 rounded-xl border border-[--border]">
-                        <span className="text-sm font-medium text-[--fg-secondary]">System Key Status</span>
-                        {hasEnvKey ? (
-                             <div className="flex items-center gap-1.5 text-[--success] bg-[--success]/10 px-2.5 py-1 rounded-full">
-                                <span className="relative flex h-2 w-2">
-                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                                </span>
-                                <span className="text-xs font-bold uppercase tracking-wide">Active</span>
-                             </div>
-                        ) : (
-                             <div className="flex items-center gap-1.5 text-[--warning] bg-[--warning]/10 px-2.5 py-1 rounded-full">
-                                <div className="w-1.5 h-1.5 rounded-full bg-[--warning]"></div>
-                                <span className="text-xs font-bold uppercase tracking-wide">Not Detected</span>
-                             </div>
-                        )}
-                    </div>
+                    <p className="text-sm text-[--fg-secondary] leading-relaxed">
+                        ASAP AI is configured to work automatically. However, if you have your own high-limit API key, you can enter it below to override the system default.
+                    </p>
 
                     <div className="space-y-2">
                         <div className="flex justify-between items-center px-1">
-                            <label className="text-sm font-medium text-[--fg-primary]">Custom API Key</label>
+                            <label className="text-sm font-medium text-[--fg-primary]">Custom API Key (Optional)</label>
                             <a 
                                 href="https://aistudio.google.com/app/apikey" 
                                 target="_blank" 
@@ -71,27 +53,22 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, customAp
                             </a>
                         </div>
                         <div className="relative group">
-                            <KeyIcon className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${isUsingEnvKey ? 'text-[--success]' : 'text-[--fg-tertiary] group-focus-within:text-[--accent]'}`} />
+                            <KeyIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[--fg-tertiary] group-focus-within:text-[--accent]" />
                             <input 
                                 type="password" 
                                 value={inputKey}
                                 onChange={(e) => setInputKey(e.target.value)}
-                                placeholder={hasEnvKey ? "Using System Key (Leave empty to use)" : "AIzaSy..."}
-                                className={`w-full bg-[--bg-primary] border rounded-xl pl-9 pr-4 py-3 text-sm outline-none transition-all placeholder:text-[--fg-tertiary] ${isUsingEnvKey ? 'border-[--success]/30 ring-1 ring-[--success]/20' : 'border-[--border] focus:border-[--accent] focus:ring-2 focus:ring-[--accent]/10'}`}
+                                placeholder="Enter your key to override default..."
+                                className="w-full bg-[--bg-primary] border rounded-xl pl-9 pr-4 py-3 text-sm outline-none transition-all placeholder:text-[--fg-tertiary] border-[--border] focus:border-[--accent] focus:ring-2 focus:ring-[--accent]/10"
                             />
                         </div>
-                        <p className="text-[10px] text-[--fg-tertiary] px-1 leading-relaxed">
-                            {hasEnvKey 
-                                ? "A system key is available. To use it, simply leave this field empty and save." 
-                                : "No system key detected. You must provide a custom key to perform analysis."}
-                        </p>
                     </div>
                 </div>
 
                 <div className="p-4 border-t border-[--border] flex gap-3 bg-[--bg-secondary]/10">
                     <button onClick={onClose} className="flex-1 py-3 text-sm font-medium text-[--fg-secondary] hover:bg-[--bg-secondary] rounded-xl transition-colors">Cancel</button>
                     <button onClick={handleSave} className="flex-1 py-3 text-sm font-semibold bg-[--accent] text-white rounded-xl hover:bg-[--accent-hover] transition-colors shadow-lg shadow-[--accent]/20 active:scale-[0.98] transform">
-                        {inputKey ? 'Save Custom Key' : (hasEnvKey ? 'Use System Key' : 'Save')}
+                        Save Configuration
                     </button>
                 </div>
             </div>

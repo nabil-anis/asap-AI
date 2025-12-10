@@ -37,7 +37,7 @@ const App: React.FC = () => {
     const [history, setHistory] = useState<ReportHistoryItem[]>([]);
     const [theme, setTheme] = useState('dark');
     
-    // User custom key from local storage
+    // User custom key from local storage (optional override)
     const [customApiKey, setCustomApiKey] = useState('');
 
     useEffect(() => {
@@ -191,12 +191,13 @@ const App: React.FC = () => {
         setAnalysisResult(null);
 
         try {
-            // Priority: 1. User Custom Key, 2. Deployment Environment Variable
+            // Priority: 1. User Custom Key, 2. Environment Variable
+            // The environment variable 'process.env.API_KEY' must be configured in your deployment settings (e.g., Vercel, Netlify).
             const apiKey = customApiKey || process.env.API_KEY;
             
             if (!apiKey) {
                 setIsSettingsOpen(true);
-                throw new Error("No API key configured. Please enter your Google Gemini API Key in the settings to proceed.");
+                throw new Error("API Configuration Error: No valid key found. Please configure an API key in Settings.");
             }
 
             const ai = new GoogleGenAI({ apiKey });
@@ -334,7 +335,6 @@ const App: React.FC = () => {
                 isOpen={isSettingsOpen}
                 onClose={() => setIsSettingsOpen(false)}
                 customApiKey={customApiKey}
-                hasEnvKey={!!process.env.API_KEY}
                 onSave={handleSaveApiKey}
             />
         </div>
