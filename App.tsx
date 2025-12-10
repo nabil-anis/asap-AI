@@ -334,6 +334,7 @@ const App: React.FC = () => {
                 isOpen={isSettingsOpen}
                 onClose={() => setIsSettingsOpen(false)}
                 customApiKey={customApiKey}
+                hasEnvKey={!!process.env.API_KEY}
                 onSave={handleSaveApiKey}
             />
         </div>
