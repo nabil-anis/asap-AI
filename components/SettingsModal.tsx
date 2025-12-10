@@ -34,42 +34,38 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, customAp
                     <button onClick={onClose} className="p-1.5 rounded-full bg-[--bg-secondary] text-[--fg-secondary] hover:bg-[--bg-tertiary] transition-colors"><XIcon className="w-4 h-4"/></button>
                 </div>
 
-                <div className="p-6 space-y-5">
-                    
-                    <p className="text-sm text-[--fg-secondary] leading-relaxed">
-                        ASAP AI is configured to work automatically. However, if you have your own high-limit API key, you can enter it below to override the system default.
-                    </p>
-
+                <div className="p-6 space-y-4">
                     <div className="space-y-2">
-                        <div className="flex justify-between items-center px-1">
-                            <label className="text-sm font-medium text-[--fg-primary]">Custom API Key (Optional)</label>
+                        <div className="flex justify-between items-center">
+                            <label className="text-sm font-medium text-[--fg-secondary] ml-1">Custom API Key (Optional)</label>
                             <a 
                                 href="https://aistudio.google.com/app/apikey" 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-1 text-xs text-[--accent] hover:underline font-medium"
+                                className="flex items-center gap-1 text-xs text-[--accent] hover:underline"
                             >
-                                Get Key <ExternalLinkIcon className="w-3 h-3" />
+                                Get Gemini Key <ExternalLinkIcon className="w-3 h-3" />
                             </a>
                         </div>
-                        <div className="relative group">
-                            <KeyIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[--fg-tertiary] group-focus-within:text-[--accent]" />
+                        <div className="relative">
+                            <KeyIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[--fg-tertiary]" />
                             <input 
                                 type="password" 
                                 value={inputKey}
                                 onChange={(e) => setInputKey(e.target.value)}
-                                placeholder="Enter your key to override default..."
-                                className="w-full bg-[--bg-primary] border rounded-xl pl-9 pr-4 py-3 text-sm outline-none transition-all placeholder:text-[--fg-tertiary] border-[--border] focus:border-[--accent] focus:ring-2 focus:ring-[--accent]/10"
+                                placeholder="Enter key to override system default..."
+                                className="w-full bg-[--bg-secondary] border-none rounded-xl pl-9 pr-4 py-3 text-sm focus:ring-2 focus:ring-[--accent] outline-none transition-all placeholder:text-[--fg-tertiary]"
                             />
                         </div>
+                        <p className="text-[10px] text-[--fg-tertiary] px-1 leading-relaxed">
+                             System is currently optimized for Google Gemini. Support for other models (OpenAI, Grok) is coming soon.
+                        </p>
                     </div>
                 </div>
 
-                <div className="p-4 border-t border-[--border] flex gap-3 bg-[--bg-secondary]/10">
+                <div className="p-4 border-t border-[--border] flex gap-3">
                     <button onClick={onClose} className="flex-1 py-3 text-sm font-medium text-[--fg-secondary] hover:bg-[--bg-secondary] rounded-xl transition-colors">Cancel</button>
-                    <button onClick={handleSave} className="flex-1 py-3 text-sm font-semibold bg-[--accent] text-white rounded-xl hover:bg-[--accent-hover] transition-colors shadow-lg shadow-[--accent]/20 active:scale-[0.98] transform">
-                        Save Configuration
-                    </button>
+                    <button onClick={handleSave} className="flex-1 py-3 text-sm font-semibold bg-[--accent] text-white rounded-xl hover:bg-[--accent-hover] transition-colors shadow-lg shadow-[--accent]/20">Save</button>
                 </div>
             </div>
         </div>

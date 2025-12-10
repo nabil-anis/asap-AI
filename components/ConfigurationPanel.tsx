@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { AppConfig, DisciplineKey, UploadedFile } from '../types';
 import { ACADEMIC_LEVELS, DISCIPLINES, MAX_CRITERIA, MIN_CRITERIA, MAX_TOTAL_FILE_SIZE_BYTES } from '../constants';
@@ -5,7 +6,7 @@ import ThemeToggle from './ThemeToggle';
 import { 
     LogoIcon, PanelCloseIcon, InfoIcon, HistoryIcon, 
     UploadCloudIcon, FileTextIcon, XCircleIcon, PlusCircleIcon, MinusCircleIcon,
-    GeneralIcon, KeyIcon
+    GeneralIcon
 } from './icons';
 
 interface ConfigurationPanelProps {
@@ -19,7 +20,6 @@ interface ConfigurationPanelProps {
     savedReportsCount: number;
     toggleHistory: () => void;
     toggleAbout: () => void;
-    toggleSettings: () => void;
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     theme: string;
@@ -57,7 +57,7 @@ const formatBytes = (bytes: number): string => {
 
 const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({
     config, setConfig, files, setFiles, isAnalyzing, onSubmit, onReset,
-    savedReportsCount, toggleHistory, toggleAbout, toggleSettings, isOpen, setIsOpen,
+    savedReportsCount, toggleHistory, toggleAbout, isOpen, setIsOpen,
     theme, toggleTheme
 }) => {
 
@@ -154,7 +154,6 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({
                     </div>
                 </div>
                 <div className="flex items-center gap-0.5">
-                     <button onClick={toggleSettings} className="p-2 rounded-xl text-[--fg-secondary] hover:bg-[--bg-tertiary] transition-colors"><KeyIcon className="w-5 h-5"/></button>
                      <button onClick={toggleHistory} className="p-2 rounded-xl text-[--fg-secondary] hover:bg-[--bg-tertiary] transition-colors relative">
                         <HistoryIcon className="w-5 h-5"/>
                         {savedReportsCount > 0 && <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[--accent]"></span>}

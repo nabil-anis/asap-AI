@@ -25,7 +25,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ error }) => {
                 </h1>
                 
                 <p className="text-lg md:text-xl text-[--fg-secondary] font-medium leading-relaxed max-w-lg mx-auto">
-                    Evaluate your work with the intelligence of Gemini 3 Pro. Configured for academic and professional rigor.
+                    Evaluate your work with advanced AI intelligence. Configured for academic and professional rigor.
                 </p>
             </div>
 

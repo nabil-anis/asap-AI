@@ -7,7 +7,6 @@ import LoadingScreen from './components/LoadingScreen';
 import ResultsScreen from './components/ResultsScreen';
 import HistoryModal from './components/HistoryModal';
 import AboutModal from './components/AboutModal';
-import SettingsModal from './components/SettingsModal';
 import { SliderIcon } from './components/icons';
 import { AppConfig, AnalysisResult, UploadedFile, ReportHistoryItem, DisciplineKey } from './types';
 import { ACADEMIC_LEVELS, DISCIPLINES } from './constants';
@@ -33,13 +32,9 @@ const App: React.FC = () => {
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(true);
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
     const [isAboutOpen, setIsAboutOpen] = useState(false);
-    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [history, setHistory] = useState<ReportHistoryItem[]>([]);
     const [theme, setTheme] = useState('dark');
     
-    // User custom key from local storage (optional override)
-    const [customApiKey, setCustomApiKey] = useState('');
-
     useEffect(() => {
         const savedHistory = localStorage.getItem('asapai-history');
         if (savedHistory) {
@@ -47,11 +42,6 @@ const App: React.FC = () => {
         }
         const savedTheme = localStorage.getItem('asapai-theme') || 'dark';
         setTheme(savedTheme);
-        
-        const savedKey = localStorage.getItem('asapai-custom-api-key');
-        if (savedKey) {
-            setCustomApiKey(savedKey);
-        }
         
         if (window.innerWidth < 768) {
             setIsConfigPanelOpen(false);
@@ -78,15 +68,6 @@ const App: React.FC = () => {
         setError(null);
     }, []);
 
-    const handleSaveApiKey = (key: string) => {
-        setCustomApiKey(key);
-        if (key) {
-            localStorage.setItem('asapai-custom-api-key', key);
-        } else {
-            localStorage.removeItem('asapai-custom-api-key');
-        }
-    };
-    
     const saveReportToHistory = (result: AnalysisResult) => {
         const newHistoryItem: ReportHistoryItem = {
             id: new Date().toISOString(),
@@ -191,13 +172,13 @@ const App: React.FC = () => {
         setAnalysisResult(null);
 
         try {
-            // Priority: 1. User Custom Key, 2. Environment Variable
-            // The environment variable 'process.env.API_KEY' must be configured in your deployment settings (e.g., Vercel, Netlify).
-            const apiKey = customApiKey || process.env.API_KEY;
+            // Updated API Key usage to strictly follow guidelines:
+            // "The API key must be obtained exclusively from the environment variable process.env.API_KEY."
+            const apiKey = process.env.API_KEY;
             
             if (!apiKey) {
-                setIsSettingsOpen(true);
-                throw new Error("API Configuration Error: No valid key found. Please configure an API key in Settings.");
+                // Since we can't ask the user, we just have to error out if it's missing in env.
+                throw new Error("No API key configured in environment variables.");
             }
 
             const ai = new GoogleGenAI({ apiKey });
@@ -286,7 +267,6 @@ const App: React.FC = () => {
                 savedReportsCount={history.length}
                 toggleHistory={() => setIsHistoryOpen(true)}
                 toggleAbout={() => setIsAboutOpen(true)}
-                toggleSettings={() => setIsSettingsOpen(true)}
                 isOpen={isConfigPanelOpen}
                 setIsOpen={setIsConfigPanelOpen}
                 theme={theme}
@@ -330,12 +310,6 @@ const App: React.FC = () => {
             <AboutModal
                 isOpen={isAboutOpen}
                 onClose={() => setIsAboutOpen(false)}
-            />
-            <SettingsModal
-                isOpen={isSettingsOpen}
-                onClose={() => setIsSettingsOpen(false)}
-                customApiKey={customApiKey}
-                onSave={handleSaveApiKey}
             />
         </div>
     );
