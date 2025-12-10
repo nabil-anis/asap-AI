@@ -33,7 +33,7 @@ ASAP AI is a sophisticated web application designed to provide rigorous, AI-driv
     -   [**React**](https://reactjs.org/) (with TypeScript)
     -   [**Tailwind CSS**](https://tailwindcss.com/) for styling
 -   **AI & Backend Logic:**
-    -   [**Google Gemini API**](https://ai.google.dev/) (specifically `gemini-3-pro-preview`) for all analytical tasks. The application utilizes the JSON mode with a strict response schema to ensure data consistency.
+    -   [**Google Gemini API**](https://ai.google.dev/) (specifically `gemini-2.5-pro`) for all analytical tasks. The application utilizes the JSON mode with a strict response schema to ensure data consistency.
 -   **Deployment:**
     -   This application is designed to be deployed on static hosting platforms like Vercel or Netlify.
 

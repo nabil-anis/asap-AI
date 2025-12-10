@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { GoogleGenAI, Type, Part } from "@google/genai";
 import ConfigurationPanel from './components/ConfigurationPanel';
@@ -9,6 +8,7 @@ import HistoryModal from './components/HistoryModal';
 import AboutModal from './components/AboutModal';
 import { SliderIcon } from './components/icons';
 import { AppConfig, AnalysisResult, UploadedFile, ReportHistoryItem, DisciplineKey } from './types';
+// FIX: Corrected typo from DISCIPLIPLINES to DISCIPLINES
 import { ACADEMIC_LEVELS, DISCIPLINES } from './constants';
 
 const DEFAULT_CONFIG: AppConfig = {
@@ -17,6 +17,7 @@ const DEFAULT_CONFIG: AppConfig = {
   academicLevel: ACADEMIC_LEVELS[2],
   evaluationContext: '',
   projectURL: '',
+  // FIX: Corrected typo from DISCIPLIPLINES to DISCIPLINES
   evaluationCriteria: DISCIPLINES['General'].criteria,
   checkOriginality: true,
   customDiscipline: '',
@@ -34,7 +35,7 @@ const App: React.FC = () => {
     const [isAboutOpen, setIsAboutOpen] = useState(false);
     const [history, setHistory] = useState<ReportHistoryItem[]>([]);
     const [theme, setTheme] = useState('dark');
-    
+
     useEffect(() => {
         const savedHistory = localStorage.getItem('asapai-history');
         if (savedHistory) {
@@ -67,7 +68,7 @@ const App: React.FC = () => {
         setAnalysisResult(null);
         setError(null);
     }, []);
-
+    
     const saveReportToHistory = (result: AnalysisResult) => {
         const newHistoryItem: ReportHistoryItem = {
             id: new Date().toISOString(),
@@ -172,16 +173,7 @@ const App: React.FC = () => {
         setAnalysisResult(null);
 
         try {
-            // Updated API Key usage to strictly follow guidelines:
-            // "The API key must be obtained exclusively from the environment variable process.env.API_KEY."
-            const apiKey = process.env.API_KEY;
-            
-            if (!apiKey) {
-                // Since we can't ask the user, we just have to error out if it's missing in env.
-                throw new Error("No API key configured in environment variables.");
-            }
-
-            const ai = new GoogleGenAI({ apiKey });
+            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
             
             const disciplineName = config.discipline === 'Other' ? config.customDiscipline : config.discipline;
             
@@ -229,7 +221,7 @@ const App: React.FC = () => {
             }));
 
             const response = await ai.models.generateContent({
-                model: 'gemini-3-pro-preview',
+                model: 'gemini-2.5-pro',
                 contents: { parts: [{ text: prompt }, ...fileParts] },
                 config: {
                     responseMimeType: "application/json",
@@ -240,6 +232,7 @@ const App: React.FC = () => {
             const resultJson = response.text.trim();
             const resultData = JSON.parse(resultJson) as AnalysisResult;
             
+            // Manually inject the user-provided title to ensure consistency.
             resultData.projectTitle = config.projectTitle;
 
             setAnalysisResult(resultData);
@@ -255,7 +248,7 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="flex h-screen w-screen bg-[--background] text-[--foreground] font-sans overflow-hidden relative">
+        <div className="flex h-screen w-screen bg-[--background] text-[--foreground] font-sans overflow-hidden">
             <ConfigurationPanel
                 config={config}
                 setConfig={setConfig}
@@ -272,33 +265,28 @@ const App: React.FC = () => {
                 theme={theme}
                 toggleTheme={toggleTheme}
             />
-            {/* Main content shifts when panel is open on desktop */}
-            <main className={`flex-1 flex flex-col h-screen transition-all duration-500 ease-in-out relative z-10 ${isConfigPanelOpen ? 'md:ml-[400px]' : ''}`}>
-                 
-                {/* Scrollable Container with Extra Top Padding to clear floating button */}
-                <div className="flex-1 overflow-y-auto p-6 md:p-12 pt-20 md:pt-24 scroll-smooth relative">
-                    {/* Floating Toggle Button - Scrolls away with content */}
-                    {!isConfigPanelOpen && (
-                        <button 
-                            onClick={() => setIsConfigPanelOpen(true)} 
-                            className="absolute top-6 left-6 z-30 p-3 bg-[--bg-primary] border border-[--border] text-[--fg-secondary] hover:text-[--fg-primary] rounded-xl shadow-sm hover:shadow-md transition-all"
-                            aria-label="Open configuration panel"
-                        >
-                            <SliderIcon className="w-6 h-6" />
-                        </button>
-                    )}
-
+            <main className="flex-1 flex flex-col h-screen transition-all duration-500 ease-in-out">
+                 {!isConfigPanelOpen && (
+                    <button 
+                        onClick={() => setIsConfigPanelOpen(true)} 
+                        className="hidden md:block fixed top-6 left-6 z-50 p-3 bg-[--background-secondary] rounded-full shadow-lg border border-[--border] hover:bg-[--background-tertiary] transition-colors"
+                        aria-label="Open configuration panel"
+                    >
+                        <SliderIcon className="w-6 h-6" />
+                    </button>
+                )}
+                <div className="md:hidden flex-shrink-0 p-4 border-b border-[--border] flex items-center">
+                    <button onClick={() => setIsConfigPanelOpen(true)} className="p-2">
+                        <SliderIcon className="w-6 h-6" />
+                    </button>
+                    <h1 className="text-xl font-bold tracking-tight text-center flex-1">ASAP AI</h1>
+                </div>
+                <div className="flex-1 overflow-y-auto p-6 md:p-12">
                     {isAnalyzing ? <LoadingScreen /> : 
                      analysisResult ? <ResultsScreen result={analysisResult} projectTitle={config.projectTitle} /> : 
                      <WelcomeScreen error={error} />}
-
-                     {/* Footer Watermark - Located at the bottom of the scrollable content */}
-                     <footer className="w-full py-12 text-center mt-auto">
-                        <span className="text-[10px] font-semibold text-[--fg-tertiary]/40 tracking-widest uppercase select-none">by nbl.</span>
-                     </footer>
                 </div>
             </main>
-            
             <HistoryModal
                 isOpen={isHistoryOpen}
                 onClose={() => setIsHistoryOpen(false)}

@@ -7,38 +7,25 @@ interface WelcomeScreenProps {
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ error }) => {
   return (
-    <div className="flex flex-col items-center justify-center h-full min-h-[calc(100vh-4rem)] text-center animate-fade-in px-6">
-        
-        {/* Subtle Ambient Light */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[--accent] opacity-[0.03] blur-[120px] rounded-full pointer-events-none"></div>
-
-        <div className="relative z-10 flex flex-col items-center max-w-2xl mx-auto space-y-8">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[--fg-primary] to-[--fg-secondary] flex items-center justify-center shadow-xl shadow-black/5">
-               <LogoIcon className="w-8 h-8 text-[--bg-primary]" />
-            </div>
-            
-            <div className="space-y-4">
-                <h1 className="text-4xl md:text-6xl font-semibold tracking-tight text-[--fg-primary]">
-                    Precision Analysis.
-                    <br />
-                    <span className="text-[--fg-secondary]">Instant Insight.</span>
-                </h1>
-                
-                <p className="text-lg md:text-xl text-[--fg-secondary] font-medium leading-relaxed max-w-lg mx-auto">
-                    Evaluate your work with advanced AI intelligence. Configured for academic and professional rigor.
-                </p>
-            </div>
-
-            <div className="pt-4 flex items-center justify-center gap-2 text-sm font-medium text-[--accent] bg-[--accent]/5 px-4 py-1.5 rounded-full">
-                <span>Configure project to begin</span>
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-            </div>
+    <div className="relative flex flex-col items-center justify-center h-[calc(100vh-12rem)] text-center animate-fade-in">
+        <div className="absolute inset-0 -z-10 overflow-hidden">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[--accent]/10 dark:bg-[--accent]/5 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s' }}></div>
         </div>
-
+        <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-[--background-secondary] mb-6 border border-[--border] shadow-lg">
+           <LogoIcon className="w-8 h-8 text-[--foreground-secondary]" />
+        </div>
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-[--foreground]">
+            Unlock Academic Excellence.
+        </h1>
+        <p className="mt-4 max-w-xl text-lg text-[--foreground-secondary]">
+            ASAP AI delivers rigorous, AI-driven analysis to elevate your research, writing, and presentations.
+        </p>
+        <p className="mt-8 max-w-xl text-md text-[--foreground-secondary]">
+           Configure your evaluation in the side panel and receive unparalleled feedback in minutes.
+        </p>
         {error && (
-            <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-full max-w-md bg-[--bg-secondary] border border-[--danger]/20 text-[--danger] text-sm p-4 rounded-2xl shadow-lg backdrop-blur-md">
-                <strong>Analysis Failed</strong>
-                <p className="opacity-90 mt-1">{error}</p>
+            <div className="mt-8 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-sm p-4 rounded-xl max-w-xl">
+                <strong>Analysis Error:</strong> {error}
             </div>
         )}
     </div>
