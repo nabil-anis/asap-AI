@@ -36,8 +36,9 @@ const App: React.FC = () => {
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [history, setHistory] = useState<ReportHistoryItem[]>([]);
     const [theme, setTheme] = useState('dark');
-    // Set the provided key as the default
-    const [customApiKey, setCustomApiKey] = useState('AIzaSyCdHn6yh_-u43RRL_B6N9nImqZ6-E7KR1Y');
+    
+    // User custom key from local storage
+    const [customApiKey, setCustomApiKey] = useState('');
 
     useEffect(() => {
         const savedHistory = localStorage.getItem('asapai-history');
@@ -190,8 +191,8 @@ const App: React.FC = () => {
         setAnalysisResult(null);
 
         try {
-            // STRICT: Only use the customApiKey. Do NOT fallback to process.env.API_KEY.
-            const apiKey = customApiKey;
+            // Priority: 1. User Custom Key, 2. Deployment Environment Variable
+            const apiKey = customApiKey || process.env.API_KEY;
             
             if (!apiKey) {
                 setIsSettingsOpen(true);
