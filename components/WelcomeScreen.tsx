@@ -11,24 +11,26 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ error }) => {
         <div className="absolute inset-0 -z-10 overflow-hidden">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[--accent]/10 dark:bg-[--accent]/5 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s' }}></div>
         </div>
-        <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-[--background-secondary] mb-6 border border-[--border] shadow-lg">
+        <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-[--background-secondary] mb-8 border border-[--border] shadow-lg">
            <LogoIcon className="w-8 h-8 text-[--foreground-secondary]" />
         </div>
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-[--foreground]">
+        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-[--foreground]">
             Precision Analysis.
         </h1>
-        <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[--foreground-secondary] mt-2">
+        <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[--foreground-secondary] mt-4 opacity-80">
             Instant Insight.
         </h2>
-        <p className="mt-6 max-w-xl text-lg text-[--foreground-secondary]">
-            Evaluate your work with the intelligence of advanced AI. Configured for academic and professional rigor.
+        <p className="mt-8 max-w-xl text-lg text-[--foreground-secondary] leading-relaxed">
+            Evaluate your work with the intelligence of advanced AI. Built for the modern scholar seeking rigorous, unflinching feedback.
         </p>
-        <p className="mt-8 max-w-xl text-sm text-[--foreground-tertiary] italic">
-           Configure your parameters in the side panel to begin.
-        </p>
+        <div className="mt-12 flex flex-col items-center gap-2">
+           <p className="text-sm font-medium text-[--foreground-tertiary] uppercase tracking-widest">Configure to begin</p>
+           <div className="w-0.5 h-12 bg-gradient-to-b from-[--border] to-transparent"></div>
+        </div>
         {error && (
-            <div className="mt-8 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-sm p-4 rounded-xl max-w-xl">
-                <strong>Analysis Error:</strong> {error}
+            <div className="mt-8 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-sm p-4 rounded-2xl max-w-xl animate-shake">
+                <p className="font-semibold">Analysis Error</p>
+                <p className="mt-1 opacity-80">{error}</p>
             </div>
         )}
     </div>

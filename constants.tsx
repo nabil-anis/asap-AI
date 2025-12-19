@@ -95,7 +95,6 @@ export const DISCIPLINES = {
   },
 };
 
-
 export const ACADEMIC_LEVELS = [
   'Undergraduate (Year 1-2)',
   'Undergraduate (Year 3-4)',
