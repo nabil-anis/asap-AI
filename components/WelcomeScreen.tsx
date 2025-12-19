@@ -15,13 +15,16 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ error }) => {
            <LogoIcon className="w-8 h-8 text-[--foreground-secondary]" />
         </div>
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-[--foreground]">
-            Unlock Academic Excellence.
+            Precision Analysis.
         </h1>
-        <p className="mt-4 max-w-xl text-lg text-[--foreground-secondary]">
-            ASAP AI delivers rigorous, AI-driven analysis to elevate your research, writing, and presentations.
+        <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[--foreground-secondary] mt-2">
+            Instant Insight.
+        </h2>
+        <p className="mt-6 max-w-xl text-lg text-[--foreground-secondary]">
+            Evaluate your work with the intelligence of advanced AI. Configured for academic and professional rigor.
         </p>
-        <p className="mt-8 max-w-xl text-md text-[--foreground-secondary]">
-           Configure your evaluation in the side panel and receive unparalleled feedback in minutes.
+        <p className="mt-8 max-w-xl text-sm text-[--foreground-tertiary] italic">
+           Configure your parameters in the side panel to begin.
         </p>
         {error && (
             <div className="mt-8 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-sm p-4 rounded-xl max-w-xl">

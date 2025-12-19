@@ -7,8 +7,7 @@ import ResultsScreen from './components/ResultsScreen';
 import HistoryModal from './components/HistoryModal';
 import AboutModal from './components/AboutModal';
 import { SliderIcon } from './components/icons';
-import { AppConfig, AnalysisResult, UploadedFile, ReportHistoryItem, DisciplineKey } from './types';
-// FIX: Corrected typo from DISCIPLIPLINES to DISCIPLINES
+import { AppConfig, AnalysisResult, UploadedFile, ReportHistoryItem } from './types';
 import { ACADEMIC_LEVELS, DISCIPLINES } from './constants';
 
 const DEFAULT_CONFIG: AppConfig = {
@@ -17,7 +16,6 @@ const DEFAULT_CONFIG: AppConfig = {
   academicLevel: ACADEMIC_LEVELS[2],
   evaluationContext: '',
   projectURL: '',
-  // FIX: Corrected typo from DISCIPLIPLINES to DISCIPLINES
   evaluationCriteria: DISCIPLINES['General'].criteria,
   checkOriginality: true,
   customDiscipline: '',
@@ -47,7 +45,6 @@ const App: React.FC = () => {
         if (window.innerWidth < 768) {
             setIsConfigPanelOpen(false);
         }
-
     }, []);
 
     useEffect(() => {
@@ -179,41 +176,23 @@ const App: React.FC = () => {
             
             const prompt = `
               **PRIMARY DIRECTIVE: Project-Content Coherence Check**
-              Your FIRST and MOST CRITICAL task is to verify if the uploaded file content is coherent with the provided 'Project Context' (especially the Title, Discipline, and URL).
-
-              - **IF a major discrepancy exists** (e.g., the title is 'Study Buddy Website' but the files contain a personal portfolio):
-                  1.  You MUST explicitly state this mismatch as the primary finding in the 'overallAnalysis'.
-                  2.  The 'summaryTitle' MUST reflect this, for example: "Project-Content Mismatch" or "Uploaded Files Do Not Match Project Title".
-                  3.  The 'overallScore' MUST be severely penalized to a value below 30. A project that doesn't match its own description is a fundamental failure.
-                  4.  All subsequent analysis (criteria, originality, etc.) MUST be performed on the submitted files but framed entirely within the context of this mismatch. For instance, a feedback point could be: "The code quality is adequate for a portfolio, but it is completely irrelevant to the stated 'Study Buddy' project goal."
+              Your FIRST and MOST CRITICAL task is to verify if the uploaded file content is coherent with the provided 'Project Context'.
               
-              - **IF the content IS COHERENT** with the context, proceed with the standard, rigorous evaluation below.
+              Project Title: ${config.projectTitle}
+              Discipline: ${disciplineName}
+              Academic Level: ${config.academicLevel}
+              Evaluation Context: ${config.evaluationContext}
+              Project URL: ${config.projectURL}
 
-              ---
-              
-              **Standard Evaluation Protocol:**
-              You are ASAP AI, an expert academic and professional project evaluator. Your task is to perform a rigorous, objective analysis of the provided project, assuming it has passed the coherence check.
-              
-              **Project Context:**
-              - Title: ${config.projectTitle}
-              - Discipline: ${disciplineName}
-              - Academic Level: ${config.academicLevel}
-              - Evaluation Context: ${config.evaluationContext}
-              - Project URL (if provided): ${config.projectURL}
-
-              **Evaluation Criteria:**
-              Please evaluate the project based on the following criteria:
+              Evaluation Criteria:
               ${config.evaluationCriteria.map(c => `- ${c}`).join('\n')}
 
-              **Your Tasks:**
-              1.  **Overall Analysis:** Provide a holistic evaluation, synthesizing strengths and weaknesses.
-              2.  **Criteria-Based Scoring:** For each criterion, provide a score from 0-100 and 2-4 specific, constructive feedback points.
-              3.  **Originality Report:** ${config.checkOriginality ? 'Assess the conceptual originality. Provide a score from 0-100, a summary, and identify any potential conceptual overlaps with existing known work, if applicable.' : 'Originality check was not requested.'}
-              4.  **Suggested Actions:** List 3-5 concrete, actionable steps the author can take to improve the project.
-              5.  **Defense Preparation:** Generate a comprehensive set of at least 15 probing questions to prepare the author for a project defense (viva). Group these questions into 3-4 logical categories (e.g., Methodology & Approach, Contribution & Implications, Limitations & Future Work). For EACH question, you MUST provide a brief but insightful 'answerOutline' containing 2-3 bullet points that guide the author on how to structure their response.
-              
-              **Output Format:**
-              You MUST return your entire analysis in a single, valid JSON object that adheres to the provided schema. The 'projectTitle' field is NOT in the schema; do not include it. Adhere strictly to the schema for all other fields. Do not include any markdown formatting or explanatory text outside of the JSON structure.
+              Tasks:
+              1. Holistic analysis.
+              2. Scoring based on criteria.
+              3. Conceptual originality check.
+              4. Actionable improvements.
+              5. Defense preparation (15+ questions with outlines).
             `;
             
             const fileParts: Part[] = files.map(file => ({
@@ -221,7 +200,7 @@ const App: React.FC = () => {
             }));
 
             const response = await ai.models.generateContent({
-                model: 'gemini-2.5-pro',
+                model: 'gemini-3-pro-preview',
                 contents: { parts: [{ text: prompt }, ...fileParts] },
                 config: {
                     responseMimeType: "application/json",
@@ -229,18 +208,19 @@ const App: React.FC = () => {
                 }
             });
             
-            const resultJson = response.text.trim();
-            const resultData = JSON.parse(resultJson) as AnalysisResult;
-            
-            // Manually inject the user-provided title to ensure consistency.
+            const resultData = JSON.parse(response.text) as AnalysisResult;
             resultData.projectTitle = config.projectTitle;
 
             setAnalysisResult(resultData);
             saveReportToHistory(resultData);
 
-        } catch (e) {
+        } catch (e: any) {
             console.error("Analysis failed:", e);
-            setError(e instanceof Error ? e.message : "An unknown error occurred during analysis. The model may have returned an invalid response.");
+            if (e.message?.includes("RESOURCE_EXHAUSTED") || e.status === "RESOURCE_EXHAUSTED") {
+                setError("Quota exceeded for the current API key. Please try again in a few minutes or check your billing status.");
+            } else {
+                setError(e instanceof Error ? e.message : "Analysis failed due to a server error. Please try again.");
+            }
             setAnalysisResult(null);
         } finally {
             setIsAnalyzing(false);
@@ -265,7 +245,7 @@ const App: React.FC = () => {
                 theme={theme}
                 toggleTheme={toggleTheme}
             />
-            <main className="flex-1 flex flex-col h-screen transition-all duration-500 ease-in-out">
+            <main className="flex-1 flex flex-col h-screen transition-all duration-500 ease-in-out relative">
                  {!isConfigPanelOpen && (
                     <button 
                         onClick={() => setIsConfigPanelOpen(true)} 
@@ -281,10 +261,14 @@ const App: React.FC = () => {
                     </button>
                     <h1 className="text-xl font-bold tracking-tight text-center flex-1">ASAP AI</h1>
                 </div>
-                <div className="flex-1 overflow-y-auto p-6 md:p-12">
+                <div className="flex-1 overflow-y-auto p-6 md:p-12 pb-24">
                     {isAnalyzing ? <LoadingScreen /> : 
                      analysisResult ? <ResultsScreen result={analysisResult} projectTitle={config.projectTitle} /> : 
                      <WelcomeScreen error={error} />}
+                    
+                    <footer className="mt-20 py-8 border-t border-[--border] flex justify-center items-center opacity-40 hover:opacity-100 transition-opacity">
+                        <p className="text-xs font-medium tracking-widest uppercase">design by nbl.</p>
+                    </footer>
                 </div>
             </main>
             <HistoryModal
